@@ -6,6 +6,7 @@ import axios from "axios";
 
 const ProductScreen = () => {
   const [product, setProduct] = useState(null);
+  const [error, setError] = useState(null);
 
   const { id: productId } = useParams();
 
@@ -15,12 +16,19 @@ const ProductScreen = () => {
         const { data } = await axios.get(`/api/products/${productId}`);
         setProduct(data);
       } catch (error) {
+        setError(
+          error.message || "An error occurred while fetching the product.",
+        );
         console.error("Error fetching product:", error);
       }
     };
 
     fetchProduct();
   }, [productId]);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
 
   if (!product) {
     return <div>Loading...</div>;
